@@ -1,19 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const photoSharingControllers = require("../controllers/postControls");
+const {upload} = require("../helper_functions/multer")
 
-const getPhotoSharing = require("../controllers/postControls");
+router.post("/createPost", upload.single("file"),photoSharingControllers.createPost);
+router.get("/allPosts", photoSharingControllers.getAllPosts);
+router.get("/:id", photoSharingControllers.getPostById);
+router.delete("/:id", photoSharingControllers.deletePostById);
+router.delete("/", photoSharingControllers.deleteAllPosts);
 
-// upload picture on the platform
-router.post("/getSharing", getPhotoSharing.getPhotoShare);
-
-//get the list of all the uploaded pictures
-router.get("/getAll", getPhotoSharing.getPhotosList);
-
-//delete by id, is applied here
-router.delete("/:id", getPhotoSharing.getDeleteSharedPhotosById);
-
-//removes all the SharedPhotos on the platform.
-router.delete("/getRemove", getPhotoSharing.getDeleteAllSharedPhotos);
-
-//Router through the functions user wishes to touch on
 module.exports = router;

@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const postRoutes = require("./routes/post_routes");
 const app = express();
 
-//specify our "P.o.r.t" here.
 const port = 3300;
 
 app.use(express.json());
@@ -21,7 +20,7 @@ mongoose
   });
 
 app.use("/post", postRoutes);
-// app.use("/images", express.static("images"));
+app.use("/images", express.static("images"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

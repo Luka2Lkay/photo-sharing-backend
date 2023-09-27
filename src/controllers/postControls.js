@@ -1,59 +1,56 @@
-const PhotoSharing = require("../models/post");
+const Post = require("../models/post_model");
 
-//this is the create function/method
-exports.getPhotoShare = async (req, res) => {
+exports.createPost = async (req, res) => {
   try {
-    
-    // //to be included in the 
-    const {name, caption} = req.body;
-    // //file storage declared manually and specifies where images should be directed to and saved.
-    // const imageUploaded = "http://localhost:3300/images/" + req.file.filename;
+    const { name, caption } = req.body;
+    const image = "http://localhost:3300/images/" + req.file.filename;
 
-    // //this the schema where we call in the declarations.
-    // //brief details about image requirements..
-    const getSharing = new PhotoSharing({
-     name,
-     caption
+    const post = new Post({
+      name,
+      caption,
+      image,
     });
 
-    //.save() - using express functionality
-    const getPostUpload = await getSharing.save();
+    const getPostUpload = await post.save();
     res.status(201).json(getPostUpload);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 };
 
-exports.getPhotosList = async (_req, res) => {
+exports.getAllPosts = async (_req, res) => {
   try {
-    //.find() - finds all courses on the database
-    const getSharedPosts = await PhotoSharing.find();
-
-    res.status(200).json(getSharedPosts);
+    const sharedPosts = await Post.find();
+    res.status(200).json(sharedPosts);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 };
 
-//Deleting a post by id: instead of all of them, this function performs exactly that
-exports.getDeleteSharedPhotosById = async (req, res) => {
+exports.getPostById = async (req, res) => {
   try {
-    const _id = req.params.id;
-    await PhotoSharing.findByIdAndRemove(_id);
-
-    res.status(201).json("Removed Successful!");
+    const { id } = req.params;
+    const sharedPost = await Post.findById(id);
+    res.status(200).json(sharedPost);
   } catch (error) {
-    res.status(404).json({ error: "Could'nt delete." });
+    res.status(404).json({ error: error.message });
   }
 };
 
-//And here, is the functionality that deletes all the posts uploaded which will be implemeted 
-//on a later stage.
-exports.getDeleteAllSharedPhotos = async (req, res) => {
+exports.deletePostById = async (req, res) => {
   try {
-    const body = req.body;
-    await PhotoSharing.deleteMany({ }, body);
+    const { id } = req.params;
+    await Post.findByIdAndRemove(id);
+    res.status(200).json("Removed Successful!");
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
 
+exports.deleteAllPosts = async (req, res) => {
+  try {
+    const { body } = req;
+    await Post.deleteMany({}, body);
     res.status(201).json("Removed all!");
   } catch (error) {
     res.status(404).json({ error: error.message });
