@@ -1,6 +1,7 @@
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
+const {db} = require("./config/db_config")
 
 const postRoutes = require("./routes/post_routes");
 const app = express();
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 mongoose
-  .connect("mongodb://127.0.0.1/Photo_Sharing")
+  .connect(db.mongoUrl)
   .then(() => {
     console.log("You are connected");
   })
