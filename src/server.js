@@ -14,14 +14,15 @@ app.use(cors());
 mongoose
   .connect("mongodb://127.0.0.1/Photo_Sharing")
   .then(() => {
-    console.log("You are connected");
+    console.log("Connected to APi");
   })
   .catch((error) => {
-    console.log("Oops! You are not connected!", error);
+    console.log("Oops! Connection access denied!", error);
   });
 
 app.use("/post", postRoutes);
-// app.use("/images", express.static("images"));
+//not used yet
+//app.use("/images", express.static("images"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

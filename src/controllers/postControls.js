@@ -4,7 +4,7 @@ const PhotoSharing = require("../models/post");
 exports.getPhotoShare = async (req, res) => {
   try {
     
-    // //to be included in the 
+    // declarations
     const {name, caption} = req.body;
     // //file storage declared manually and specifies where images should be directed to and saved.
     // const imageUploaded = "http://localhost:3300/images/" + req.file.filename;
@@ -27,11 +27,11 @@ exports.getPhotoShare = async (req, res) => {
 exports.getPhotosList = async (_req, res) => {
   try {
     //.find() - finds all courses on the database
-    const getSharedPosts = await PhotoSharing.find();
+    await PhotoSharing.find();
 
-    res.status(200).json(getSharedPosts);
+    res.status(200).json("Photos showing!");
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(404).json({ error: "Photos aren't showing!" });
   }
 };
 
