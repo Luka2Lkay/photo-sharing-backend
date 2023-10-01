@@ -1,5 +1,7 @@
+require("dotenv").config()
+
 const secretKey = {
-    secret: "photo-sharing-secret-key"
+    secret: process.env.SECRET_KEY
 }
 
 module.exports = {secretKey}
