@@ -2,19 +2,22 @@ const userModel = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 
 exports.register = async (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, 10);
-  const hash2 = bcrypt.hashSync(req.body.password, 10);
+  const { username, email, password, confirmPassword } = req.body;
 
-  const checkEmail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/g.test(req.body.email);
+   const hash = bcrypt.hashSync(password, 10);
+   const hash2= bcrypt.hashSync(confirmPassword, 10);
+
+  const checkEmail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/g.test(email);
+
   try {
     const user = new userModel({
-      username: req.body.username,
-      email: req.body.email,
+      username,
+      email,
       password: hash,
       confirmPassword: hash2,
     });
 
-    if (req.body.password === req.body.confirmPassword && checkEmail) {
+    if (password === confirmPassword && checkEmail) {
       const registeredUser = await user.save();
       res
         .status(201)
@@ -23,6 +26,26 @@ exports.register = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+exports.logIn = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const user = await userModel.findOne({username});
+
+    if (!user) {
+      res.status(401).json({message: 'User not found'})
+    }
+
+    const checkPasswordMatch = await bcrypt.compare(password, user.password)
+
+ if (!checkPasswordMatch) {
+  res.status(401).json({message: "incorrect password"})
+ }
+
+ res.status(200).json({message: "Successfully logged in"})
+  } catch {}
 };
 
 exports.deleteAllUsers = async (req, res) => {

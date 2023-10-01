@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const { db } = require("./config/db_config");
 
 const postRoutes = require("./routes/post_routes");
-const registerRoutes = require("./routes/register_routes");
+const usersRoutes = require("./routes/users_routes");
 
 const app = express();
 
@@ -23,7 +23,7 @@ mongoose
   });
 
 app.use("/post", postRoutes);
-app.use("/register", registerRoutes);
+app.use("/users", usersRoutes);
 
 app.use("/images", express.static("images"));
 
