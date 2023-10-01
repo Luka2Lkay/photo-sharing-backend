@@ -1,11 +1,13 @@
 const userModel = require("../models/user_model");
 const bcrypt = require("bcryptjs");
+const { secretKey } = require("../config/auth_key_config");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
-   const hash = bcrypt.hashSync(password, 10);
-   const hash2= bcrypt.hashSync(confirmPassword, 10);
+  const hash = bcrypt.hashSync(password, 10);
+  const hash2 = bcrypt.hashSync(confirmPassword, 10);
 
   const checkEmail = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/g.test(email);
 
@@ -32,20 +34,30 @@ exports.logIn = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    const user = await userModel.findOne({username});
+    const user = await userModel.findOne({ username });
 
     if (!user) {
-      res.status(401).json({message: 'User not found'})
+      res.status(401).json({ message: "User not found" });
     }
 
-    const checkPasswordMatch = await bcrypt.compare(password, user.password)
+    const checkPasswordMatch = await bcrypt.compare(password, user.password);
 
- if (!checkPasswordMatch) {
-  res.status(401).json({message: "incorrect password"})
- }
+    if (!checkPasswordMatch) {
+      res.status(401).json({ message: "incorrect password" });
+    }
 
- res.status(200).json({message: "Successfully logged in"})
-  } catch {}
+    const token = jwt.sign(
+      { username: user.username, userId: user._id },
+      secretKey.secret,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).json({ token: token, expiresIn: "1h" });
+  } catch (err) {
+    res.status(401).json({ message: err.message });
+  }
 };
 
 exports.deleteAllUsers = async (req, res) => {
