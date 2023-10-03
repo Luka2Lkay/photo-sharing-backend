@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 //directory imports for right of use
 const { db } = require("./config/db_config");
 const postRoutes = require("./routes/post_routes");
-const registerRoutes = require("./routes/register_routes");
+const usersRoutes = require("./routes/users_routes");
 
 const app = express();
 
@@ -24,9 +24,7 @@ mongoose.connect(db.mongoUrl)
   });
 
 app.use("/post", postRoutes);
-app.use("/register", registerRoutes);
-app.use("/signin", registerRoutes);
-
+app.use("/users", usersRoutes);
 
 app.use("/images", express.static("images"));
 
