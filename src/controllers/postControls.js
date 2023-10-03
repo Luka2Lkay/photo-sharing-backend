@@ -2,9 +2,10 @@ const postModel = require("../models/post_model");
 
 exports.createPost = async (req, res) => {
   try {
-    const { name, image, caption } = req.body;
-    // const image = "http://localhost:3300/images/" + req.file.filename;
 
+    console.log(req.file)
+    const { name, caption } = req.body;
+    const image = "http://localhost:3300/images/" + req.file.filename;
     const post = new postModel({
       name,
       caption,
