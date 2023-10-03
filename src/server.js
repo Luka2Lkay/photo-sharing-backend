@@ -1,20 +1,21 @@
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
-const { db } = require("./config/db_config");
 
+//directory imports for right of use
+const { db } = require("./config/db_config");
 const postRoutes = require("./routes/post_routes");
 const registerRoutes = require("./routes/register_routes");
 
 const app = express();
 
+//will be using this port
 const port = 3300;
 
 app.use(express.json());
 app.use(cors());
 
-mongoose
-  .connect(db.mongoUrl)
+mongoose.connect(db.mongoUrl)
   .then(() => {
     console.log("Connected to APi");
   })
@@ -24,6 +25,8 @@ mongoose
 
 app.use("/post", postRoutes);
 app.use("/register", registerRoutes);
+app.use("/signin", registerRoutes);
+
 
 app.use("/images", express.static("images"));
 

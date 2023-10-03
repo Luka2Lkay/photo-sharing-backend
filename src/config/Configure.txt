@@ -1,3 +1,0 @@
-//1. configure MongoDB database
-
-//2. configure Auth Key
