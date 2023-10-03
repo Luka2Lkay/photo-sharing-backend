@@ -1,9 +1,11 @@
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
-const {db} = require("./config/db_config")
+const { db } = require("./config/db_config");
 
 const postRoutes = require("./routes/post_routes");
+const usersRoutes = require("./routes/users_routes");
+
 const app = express();
 
 const port = 3300;
@@ -21,6 +23,8 @@ mongoose
   });
 
 app.use("/post", postRoutes);
+app.use("/users", usersRoutes);
+
 app.use("/images", express.static("images"));
 
 app.listen(port, () => {

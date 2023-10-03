@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const photoSharingControllers = require("../controllers/postControls");
+const photoSharingControllers = require("../controllers/post_control");
 const {upload} = require("../helper_functions/multer")
 
 router.post("/createPost", upload.single("file"),photoSharingControllers.createPost);

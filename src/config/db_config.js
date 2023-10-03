@@ -1,5 +1,7 @@
+require("dotenv").config();
+
 const db = {
-  mongoUrl: "mongodb://127.0.0.1/Photo_Sharing",
+  mongoUrl: process.env.DB,
 };
 
 module.exports = { db };
