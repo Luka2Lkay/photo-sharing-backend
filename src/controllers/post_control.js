@@ -50,6 +50,24 @@ exports.getPostById = async (req, res) => {
   }
 };
 
+exports.getPostByUserId = async (req, res) => {
+  const {id} = req.params
+  let userPosts;
+
+  try {
+    userPosts = await User.findById(id).populate("posts")
+    return res.status(200).json({posts: userPosts.posts})
+  } catch (error) {
+    res.status(401).json({message: error.message})
+  }
+
+  if (!userPosts) {
+     return res.status(404).json({message: "No posts found"})
+  }
+
+
+}
+
 exports.deletePostById = async (req, res) => {
   try {
     const { id } = req.params;

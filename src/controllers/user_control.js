@@ -74,7 +74,7 @@ exports.getOneUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const users = await User.findById(id).populate("email")
+    const users = await User.findById(id)
 
     res.status(200).json(users);
   } catch (error) {

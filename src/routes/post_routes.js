@@ -7,6 +7,7 @@ const {upload} = require("../helper_functions/multer")
 router.post("/createPost", photoSharingControllers.createPost);
 router.get("/allPosts", photoSharingControllers.getAllPosts);
 router.get("/:id", photoSharingControllers.getPostById);
+router.get("/user/posts/:id", photoSharingControllers.getPostByUserId);
 router.delete("/:id", photoSharingControllers.deletePostById);
 router.delete("/", photoSharingControllers.deleteAllPosts);
 
