@@ -53,7 +53,9 @@ exports.getPostById = async (req, res) => {
 exports.deletePostById = async (req, res) => {
   try {
     const { id } = req.params;
-    await Post.findByIdAndRemove(id);
+    const post = await Post.findByIdAndRemove(id).populate("users");
+    await post.users.posts.pull(post);
+    await post.users.save()
     res.status(200).json("Removed Successful!");
   } catch (error) {
     res.status(404).json({ error: error.message });
