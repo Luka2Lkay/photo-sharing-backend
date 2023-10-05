@@ -33,7 +33,9 @@ exports.createPost = async (req, res) => {
 
 exports.getAllPosts = async (_req, res) => {
   try {
-    const sharedPosts = await Post.find();
+    const sharedPosts = await Post.find()
+      .populate("postedBy", "_id")
+      .populate("comments", "comment createdAt")
     res.status(200).json(sharedPosts);
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -51,29 +53,27 @@ exports.getPostById = async (req, res) => {
 };
 
 exports.getPostByUserId = async (req, res) => {
-  const {id} = req.params
+  const { id } = req.params;
   let userPosts;
 
   try {
-    userPosts = await User.findById(id).populate("posts")
-    return res.status(200).json({posts: userPosts.posts})
+    userPosts = await User.findById(id).populate("posts");
+    return res.status(200).json({ posts: userPosts.posts });
   } catch (error) {
-    res.status(401).json({message: error.message})
+    res.status(401).json({ message: error.message });
   }
 
   if (!userPosts) {
-     return res.status(404).json({message: "No posts found"})
+    return res.status(404).json({ message: "No posts found" });
   }
-
-
-}
+};
 
 exports.deletePostById = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findByIdAndRemove(id).populate("users");
     await post.users.posts.pull(post);
-    await post.users.save()
+    await post.users.save();
     res.status(200).json("Removed Successful!");
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -87,5 +87,75 @@ exports.deleteAllPosts = async (req, res) => {
     res.status(201).json("Removed all!");
   } catch (error) {
     res.status(404).json({ error: error.message });
+  }
+};
+
+exports.like = async (req, res) => {
+  try {
+    const {id} = req.params
+  
+    const addLike = await Post.findByIdAndUpdate(id,
+      { $push: { likes: req.body.userId } },
+      { new: true }
+    );
+
+    res.status(200).json(addLike);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+
+};
+
+exports.unLike = async (req, res) => {
+  try {
+    const { comment } = req.body;
+    comment.postedBy = req.body.userId;
+
+    const removeLike = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $pull: { likes: req.body.userId } },
+      { new: true }
+    );
+
+    res.status(200).json(addLike);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+exports.comment = async (req, res) => {
+  try {
+    const { comment } = req.body;
+    comment.postedBy = req.body.userId;
+
+    const addComment = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $push: { comments: comment } },
+      { new: true }
+    )
+      .populate("comments.postedBy", "_id")
+      .populate("postedBy", "_id");
+
+    res.status(200).json(addComment);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
+exports.uncomment = async (req, res) => {
+  try {
+    const { comment } = req.body;
+
+    const addComment = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $pull: { comments: { _id: comment._id } } },
+      { new: true }
+    )
+      .populate("comments.postedBy", "_id")
+      .populate("postedBy", "_id");
+
+    res.status(200).json(addComment);
+  } catch (error) {
+    res.status(400).json(error.message);
   }
 };

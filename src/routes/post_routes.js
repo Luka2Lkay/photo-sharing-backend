@@ -10,5 +10,9 @@ router.get("/:id", photoSharingControllers.getPostById);
 router.get("/user/posts/:id", photoSharingControllers.getPostByUserId);
 router.delete("/:id", photoSharingControllers.deletePostById);
 router.delete("/", photoSharingControllers.deleteAllPosts);
+router.put("/comment", photoSharingControllers.comment)
+router.put("/uncomment", photoSharingControllers.uncomment)
+router.put("/like/:id", photoSharingControllers.like)
+router.put("/unlike", photoSharingControllers.unLike)
 
 module.exports = router;
