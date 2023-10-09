@@ -4,8 +4,8 @@ const User = require("../models/user_model");
 
 exports.createPost = async (req, res) => {
   try {
-    const { name, image, caption, users } = req.body;
-    // const image = "http://localhost:3300/images/" + req.file.filename;
+    const { name, caption, users } = req.body;
+    const image = "http://localhost:3300/images/" + req.file.filename;
 
     let existingUser;
 
@@ -16,15 +16,16 @@ exports.createPost = async (req, res) => {
     }
 
     const post = new Post({
-      name,
+    //   name,
       caption,
       image,
       users,
     });
 
     const getPostUpload = await post.save();
-    existingUser.posts.push(post);
-    existingUser.save();
+    // existingUser.posts.push(post);
+    // existingUser.save();
+    console.log(existingUser)
     res.status(201).json(getPostUpload);
   } catch (error) {
     res.status(404).json({ error: error.message });
@@ -34,8 +35,7 @@ exports.createPost = async (req, res) => {
 exports.getAllPosts = async (_req, res) => {
   try {
     const sharedPosts = await Post.find()
-      .populate("postedBy", "_id")
-      .populate("comments", "comment createdAt")
+
     res.status(200).json(sharedPosts);
   } catch (error) {
     res.status(404).json({ error: error.message });
