@@ -19,6 +19,10 @@ exports.register = async (req, res) => {
       confirmPassword: hash2,
     });
 
+if(password !== confirmPassword){
+  return res.status(401).json({message: "no match"})
+}
+
     if (password === confirmPassword && checkEmail) {
       const registeredUser = await user.save();
       res
