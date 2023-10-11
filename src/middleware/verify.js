@@ -12,7 +12,7 @@ module.exports = verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    // console.log(decoded)
+    
     req.userId = decoded.userId;
     next();
   });

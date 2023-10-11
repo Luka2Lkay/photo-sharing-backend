@@ -115,7 +115,7 @@ exports.like = async (req, res) => {
 
     const post = await Post.findByIdAndUpdate(
       id,
-      { $pull: { likes: req.body.userId } },
+      { $push: { likes: req.userId } },
       { new: true }
     );
 
@@ -126,55 +126,54 @@ exports.like = async (req, res) => {
 };
 
 exports.unLike = async (req, res) => {
-  try {
-    const { comment } = req.body;
-    comment.postedBy = req.body.userId;
+  const { id } = req.params;
 
-    const removeLike = await Post.findByIdAndUpdate(
-      req.body.postId,
-      { $pull: { likes: req.body.userId } },
+  try {
+    const post = await Post.findByIdAndUpdate(
+      id,
+      { $pull: { likes: req.userId } },
       { new: true }
     );
 
-    res.status(200).json(addLike);
+    res.status(200).json(post);
   } catch (error) {
     res.status(400).json(error.message);
   }
 };
 
-// exports.comment = async (req, res) => {
-//   try {
-//     const { comment } = req.body;
-//     comment.postedBy = req.body.userId;
+exports.comment = async (req, res) => {
+  try {
+    const { comment } = req.body;
+    comment.postedBy = req.body.userId;
 
-//     const addComment = await Post.findByIdAndUpdate(
-//       req.body.postId,
-//       { $push: { comments: comment } },
-//       { new: true }
-//     )
-//       .populate("comments.postedBy", "_id")
-//       .populate("postedBy", "_id");
+    const addComment = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $push: { comments: comment } },
+      { new: true }
+    )
+      .populate("comments.postedBy", "_id")
+      .populate("postedBy", "_id");
 
-//     res.status(200).json(addComment);
-//   } catch (error) {
-//     res.status(400).json(error.message);
-//   }
-// };
+    res.status(200).json(addComment);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
 
-// exports.uncomment = async (req, res) => {
-//   try {
-//     const { comment } = req.body;
+exports.uncomment = async (req, res) => {
+  try {
+    const { comment } = req.body;
 
-//     const addComment = await Post.findByIdAndUpdate(
-//       req.body.postId,
-//       { $pull: { comments: { _id: comment._id } } },
-//       { new: true }
-//     )
-//       .populate("comments.postedBy", "_id")
-//       .populate("postedBy", "_id");
+    const addComment = await Post.findByIdAndUpdate(
+      req.body.postId,
+      { $pull: { comments: { _id: comment._id } } },
+      { new: true }
+    )
+      .populate("comments.postedBy", "_id")
+      .populate("postedBy", "_id");
 
-//     res.status(200).json(addComment);
-//   } catch (error) {
-//     res.status(400).json(error.message);
-//   }
-// };
+    res.status(200).json(addComment);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};

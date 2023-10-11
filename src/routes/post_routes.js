@@ -13,6 +13,6 @@ router.delete("/", photoSharingControllers.deleteAllPosts);
 // router.put("/comment", photoSharingControllers.comment)
 // router.put("/uncomment", photoSharingControllers.uncomment)
 router.put("/like/:id", verify, photoSharingControllers.like)
-router.put("/unlike", photoSharingControllers.unLike)
+router.put("/unlike/:id", verify, photoSharingControllers.unLike)
 
 module.exports = router;
