@@ -93,25 +93,6 @@ exports.like = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // const post = Post.findById(id)
-    //   .then(data => {
-    //     if(!data.likes.includes(req.userId)){
-    //       data.updateOne({ $push: { likes: req.userId}})
-
-    //     }else{
-    //       data.updateOne({ $pull: { likes: req.userId}})
-    //     }
-
-    //   })
-
-    // const post = await Post.findById(id)
-
-    // if(post.likes.includes(req.userId)){
-    //   post.updateOne({},{ $pull: { likes: req.userId}})
-    // }else {
-    //   post.updateOne({ $push: { likes: req.userId}})
-    // }
-
     const post = await Post.findByIdAndUpdate(
       id,
       { $push: { likes: req.userId } },
@@ -159,7 +140,7 @@ exports.comment = async (req, res) => {
   }
 };
 
-exports.uncomment = async (req, res) => {
+exports.removeComment = async (req, res) => {
   try {
     const { comment } = req.body;
 
