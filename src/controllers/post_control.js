@@ -122,7 +122,7 @@ exports.comment = async (req, res) => {
     const { comment } = req.body;
 
     const post = await Post.findById(id);
-    const existingUser = await User.findById(req.userId)
+    const existingUser = await User.findById(req.userId);
     post.postedBy = existingUser.username;
 
     await Post.findByIdAndUpdate(
@@ -137,20 +137,21 @@ exports.comment = async (req, res) => {
   }
 };
 
-// exports.removeComment = async (req, res) => {
-//   try {
-//     const { comment } = req.body;
+exports.removeComment = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { commentId } = req.params;
 
-//     const addComment = await Post.findByIdAndUpdate(
-//       req.body.postId,
-//       { $pull: { comments: { _id: comment._id } } },
-//       { new: true }
-//     )
-//       .populate("comments.postedBy", "_id")
-//       .populate("postedBy", "_id");
+    const post = await Post.findById(postId);
 
-//     res.status(200).json(addComment);
-//   } catch (error) {
-//     res.status(400).json(error.message);
-//   }
-// };
+    await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { comments: { _id: commentId } } },
+      { new: true }
+    );
+
+    res.status(200).json("Comment removed!");
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
