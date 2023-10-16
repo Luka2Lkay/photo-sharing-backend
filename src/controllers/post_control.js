@@ -116,24 +116,26 @@ exports.toggleLike = async (req, res) => {
   }
 };
 
-// exports.comment = async (req, res) => {
-//   try {
-//     const { comment } = req.body;
-//     comment.postedBy = req.body.userId;
+exports.comment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { comment } = req.body;
 
-//     const addComment = await Post.findByIdAndUpdate(
-//       req.body.postId,
-//       { $push: { comments: comment } },
-//       { new: true }
-//     )
-//       .populate("comments.postedBy", "_id")
-//       .populate("postedBy", "_id");
+    const post = await Post.findById(id);
+    const existingUser = await User.findById(req.userId)
+    post.postedBy = existingUser.username;
 
-//     res.status(200).json(addComment);
-//   } catch (error) {
-//     res.status(400).json(error.message);
-//   }
-// };
+    await Post.findByIdAndUpdate(
+      id,
+      { $push: { comments: { postedBy: post.postedBy, comment: comment } } },
+      { new: true }
+    );
+
+    res.status(200).json("Comment added!");
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
 
 // exports.removeComment = async (req, res) => {
 //   try {
