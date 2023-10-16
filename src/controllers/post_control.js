@@ -70,9 +70,11 @@ exports.deletePostById = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findByIdAndRemove(id);
-    // await post.users.posts.pull(post);
-    // await post.users.save();
-    res.status(200).json("Removed Successful!");
+    const existingUser = await User.findById(req.userId);
+    await existingUser.posts.pull(post);
+    await existingUser.save();
+
+    res.status(200).json("Removed successfully!");
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -91,7 +93,7 @@ exports.deleteAllPosts = async (req, res) => {
 exports.toggleLike = async (req, res) => {
   try {
     const { id } = req.params;
-  
+
     const singlePost = await Post.findById(id);
 
     if (!singlePost.likes.includes(req.userId)) {
@@ -109,8 +111,6 @@ exports.toggleLike = async (req, res) => {
       );
       res.status(200).json(post);
     }
-
-    
   } catch (error) {
     res.status(400).json(error.message);
   }
