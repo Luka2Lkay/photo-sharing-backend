@@ -1,5 +1,5 @@
 module.exports = verifyToken = (req, res, next) => {
-    const jwt = require("jsonwebtoken");
+  const jwt = require("jsonwebtoken");
   let token = req.headers["x-access-token"];
 
   if (!token) {
@@ -12,8 +12,9 @@ module.exports = verifyToken = (req, res, next) => {
         message: "Unauthorized!",
       });
     }
-    
+
     req.userId = decoded.userId;
+
     next();
   });
 };

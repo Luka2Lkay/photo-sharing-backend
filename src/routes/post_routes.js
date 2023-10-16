@@ -12,7 +12,5 @@ router.delete("/:id", photoSharingControllers.deletePostById);
 router.delete("/", photoSharingControllers.deleteAllPosts);
 // router.put("/comment", photoSharingControllers.comment)
 // router.put("/removeComment", photoSharingControllers.uncomment)
-router.post("/like/:id", verify, photoSharingControllers.like)
-router.post("/unlike/:id", verify, photoSharingControllers.unLike)
-
+router.put("/like/:id", verify, photoSharingControllers.toggleLike)
 module.exports = router;

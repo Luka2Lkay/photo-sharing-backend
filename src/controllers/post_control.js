@@ -4,7 +4,7 @@ const User = require("../models/user_model");
 
 exports.createPost = async (req, res) => {
   try {
-    const {caption, user } = req.body;
+    const { caption, user } = req.body;
     const image = "http://localhost:3300/images/" + req.file.filename;
 
     let existingUser;
@@ -70,7 +70,7 @@ exports.getPostByUserId = async (req, res) => {
 exports.deletePostById = async (req, res) => {
   try {
     const { id } = req.params;
-    const post = await Post.findByIdAndRemove(id)
+    const post = await Post.findByIdAndRemove(id);
     // await post.users.posts.pull(post);
     // await post.users.save();
     res.status(200).json("Removed Successful!");
@@ -89,71 +89,67 @@ exports.deleteAllPosts = async (req, res) => {
   }
 };
 
-exports.like = async (req, res) => {
+exports.toggleLike = async (req, res) => {
   try {
     const { id } = req.params;
+  
+    const singlePost = await Post.findById(id);
 
-    const post = await Post.findByIdAndUpdate(
-      id,
-      { $push: { likes: req.userId } },
-      { new: true }
-    );
+    if (!singlePost.likes.includes(req.userId)) {
+      const post = await Post.findByIdAndUpdate(
+        id,
+        { $push: { likes: req.userId } },
+        { new: true }
+      );
+      res.status(200).json(post);
+    } else {
+      const post = await Post.findByIdAndUpdate(
+        id,
+        { $pull: { likes: req.userId } },
+        { new: true }
+      );
+      res.status(200).json(post);
+    }
 
-    res.status(200).json(post);
+    
   } catch (error) {
     res.status(400).json(error.message);
   }
 };
 
-exports.unLike = async (req, res) => {
-  const { id } = req.params;
+// exports.comment = async (req, res) => {
+//   try {
+//     const { comment } = req.body;
+//     comment.postedBy = req.body.userId;
 
-  try {
-    const post = await Post.findByIdAndUpdate(
-      id,
-      { $pull: { likes: req.userId } },
-      { new: true }
-    );
+//     const addComment = await Post.findByIdAndUpdate(
+//       req.body.postId,
+//       { $push: { comments: comment } },
+//       { new: true }
+//     )
+//       .populate("comments.postedBy", "_id")
+//       .populate("postedBy", "_id");
 
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-};
+//     res.status(200).json(addComment);
+//   } catch (error) {
+//     res.status(400).json(error.message);
+//   }
+// };
 
-exports.comment = async (req, res) => {
-  try {
-    const { comment } = req.body;
-    comment.postedBy = req.body.userId;
+// exports.removeComment = async (req, res) => {
+//   try {
+//     const { comment } = req.body;
 
-    const addComment = await Post.findByIdAndUpdate(
-      req.body.postId,
-      { $push: { comments: comment } },
-      { new: true }
-    )
-      .populate("comments.postedBy", "_id")
-      .populate("postedBy", "_id");
+//     const addComment = await Post.findByIdAndUpdate(
+//       req.body.postId,
+//       { $pull: { comments: { _id: comment._id } } },
+//       { new: true }
+//     )
+//       .populate("comments.postedBy", "_id")
+//       .populate("postedBy", "_id");
 
-    res.status(200).json(addComment);
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-};
-
-exports.removeComment = async (req, res) => {
-  try {
-    const { comment } = req.body;
-
-    const addComment = await Post.findByIdAndUpdate(
-      req.body.postId,
-      { $pull: { comments: { _id: comment._id } } },
-      { new: true }
-    )
-      .populate("comments.postedBy", "_id")
-      .populate("postedBy", "_id");
-
-    res.status(200).json(addComment);
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-};
+//     res.status(200).json(addComment);
+//   } catch (error) {
+//     res.status(400).json(error.message);
+//   }
+// };
