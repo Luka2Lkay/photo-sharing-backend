@@ -9,11 +9,11 @@ exports.createPost = async (req, res) => {
 
     let existingUser;
 
-    // try {
-    //   existingUser = await User.findById(user);
-    // } catch {
-    //   return res.status(401).json({ message: "User does not exist" });
-    // }
+    try {
+      existingUser = await User.findById(req.userId);
+    } catch {
+      return res.status(401).json({ message: "User does not exist" });
+    }
 
     const post = new Post({
       caption,
@@ -22,9 +22,8 @@ exports.createPost = async (req, res) => {
     });
 
     const getPostUpload = await post.save();
-    // existingUser.posts.push(post);
-    // existingUser.save();
-    // console.log(existingUser);
+    existingUser.posts.push(post);
+    existingUser.save();
     res.status(201).json(getPostUpload);
   } catch (error) {
     res.status(404).json({ error: error.message });

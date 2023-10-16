@@ -4,7 +4,7 @@ const photoSharingControllers = require("../controllers/post_control");
 const {upload} = require("../helper_functions/multer")
 const verify = require('../middleware/verify')
 
-router.post("/createPost", upload.single("file"),photoSharingControllers.createPost);
+router.post("/createPost", verify, upload.single("file"),photoSharingControllers.createPost);
 router.get("/allPosts", photoSharingControllers.getAllPosts);
 router.get("/:id", photoSharingControllers.getPostById);
 router.get("/user/posts/:id", photoSharingControllers.getPostByUserId);
